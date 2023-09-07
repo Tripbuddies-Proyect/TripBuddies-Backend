@@ -1,11 +1,11 @@
 package com.upc.TRIPBUDDIES.service.impl;
 
 import com.upc.TRIPBUDDIES.entities.Bussiness;
-import com.upc.TRIPBUDDIES.entities.Traveller;
+
 import com.upc.TRIPBUDDIES.repository.IBussinessRepository;
-import com.upc.TRIPBUDDIES.repository.ITravellerRepository;
+
 import com.upc.TRIPBUDDIES.service.IBussinessService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

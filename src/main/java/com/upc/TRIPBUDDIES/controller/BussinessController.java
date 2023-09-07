@@ -1,8 +1,6 @@
 package com.upc.TRIPBUDDIES.controller;
 
 import com.upc.TRIPBUDDIES.entities.Bussiness;
-import com.upc.TRIPBUDDIES.entities.Bussiness;
-import com.upc.TRIPBUDDIES.service.IBussinessService;
 import com.upc.TRIPBUDDIES.service.IBussinessService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

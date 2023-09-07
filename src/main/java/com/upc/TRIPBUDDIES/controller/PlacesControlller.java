@@ -72,7 +72,7 @@ public class PlacesControlller {
             @ApiResponse(code = 404, message = "Places Not Found"),
             @ApiResponse(code = 501, message = "Internal Server Error")
     })
-    public ResponseEntity<Places> createplaces(@PathVariable("id") Long id,@RequestBody Places places){
+    public ResponseEntity<Places> createplaces(@PathVariable("id") Long id, @RequestBody Places places){
         try {
             Optional<Bussiness> userBussiness = bussinessService.getById(id);
             if(!userBussiness.isPresent())
