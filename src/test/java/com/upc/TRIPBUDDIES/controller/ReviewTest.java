@@ -7,18 +7,25 @@ import com.upc.TRIPBUDDIES.service.IPlacesService;
 import com.upc.TRIPBUDDIES.service.IReviewService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.http.MediaType;
 
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import org.junit.jupiter.api.Test;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-public class ReviewTest {
+public class    ReviewTest {
     private MockMvc mockMvc;
+    @Mock
     private IReviewService reviewService;
+    @Mock
     private IPlacesService placesService;
+    @Mock
     private ReviewController reviewController;
     @BeforeEach
     public void setup() {
@@ -29,7 +36,7 @@ public class ReviewTest {
     }
     @Test
     public void testCreateReview() throws Exception {
-        // DATOS DE EJEMPLO QUE PROPUSIMOS
+        // DATOS DE EJEMPLO QUE Se propuso
         Long placeId = 1L;
         Review reviewToCreate = new Review();
         reviewToCreate.setReviewText("Nueva reseña");
@@ -44,5 +51,6 @@ public class ReviewTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(reviewToCreate)))
                 .andExpect(status().isCreated()); // Esperamos un código de respuesta 201 (CREATED)
+        assertThat(reviewToCreate,notNullValue());
     }
 }
