@@ -23,16 +23,25 @@ public class Places implements Serializable {
     private String description;
     @Column(name = "image_url", nullable = false, length = 2000)
     private String imageUrl;
+
     @Column(name = "price", nullable = false)
     private Float price;
 
-    @Column(name = "location", nullable = false, length = 50)
-    private String location;
+    @Column(name = "destino", nullable = false, length = 50)
+    private String destino;
 
-    @Column(name = "country", nullable = false, length = 50)
-    private String country;
+    @Column(name = "fecha", nullable = false, length = 50)
+    private String Date;
+
+    @Column(name = "hora", nullable = false, length = 50)
+    private String Hour;
+
+    @Column(name = "origen", nullable = false, length = 50)
+    private String origen;
+
+
     @ManyToOne
-    @JoinColumn(name = "bussiness_id", nullable = false)
+    @JoinColumn(name = "carriers_id", nullable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private Bussiness bussiness;
+    private carrier carriers;
 }

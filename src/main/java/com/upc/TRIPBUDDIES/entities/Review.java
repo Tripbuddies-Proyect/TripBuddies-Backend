@@ -12,16 +12,16 @@ import java.io.Serializable;
 @Table(name = "reviews")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Review implements Serializable {
+public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "reviewText", nullable = false, length = 500)
     private String reviewText;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "traveller_id")
     private Traveller traveller;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "place_id")
     private Places places;
 }

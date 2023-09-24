@@ -30,9 +30,15 @@ public class NotificationController {
     private final INotificationService notificationService;
     private final ITravellerService travellerService;
 
-    public NotificationController(INotificationService notificationService, ITravellerService travellerService) {
+    private final IUsersService usersService;
+
+
+
+
+    public NotificationController(INotificationService notificationService, ITravellerService travellerService,IUsersService usersService) {
         this.notificationService = notificationService;
         this.travellerService = travellerService;
+        this.usersService = usersService;
     }
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "List all Notifications", notes = "Method to list all Notifications")
@@ -81,8 +87,8 @@ public class NotificationController {
             @ApiResponse(code = 501, message = "Internal Server Error")
     })
     public ResponseEntity<Notification> insertNotification(@Valid @RequestBody Notification notification, @PathVariable(value = "userId") Long userId, @PathVariable("receiverId") Long receiverId){
-        Optional<Traveller> emitter = travellerService.getById(userId);
-        Optional<Traveller> receiver = travellerService.getById(receiverId);
+        Optional<User> emitter = usersService.getById(userId);
+        Optional<User> receiver = usersService.getById(receiverId);
         notification.setEmitter(emitter.get());
         notification.setReceiver(receiver.get());
         try {

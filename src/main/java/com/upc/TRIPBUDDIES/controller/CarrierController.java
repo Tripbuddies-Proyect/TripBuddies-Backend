@@ -1,7 +1,8 @@
 package com.upc.TRIPBUDDIES.controller;
 
-import com.upc.TRIPBUDDIES.entities.Bussiness;
-import com.upc.TRIPBUDDIES.service.IBussinessService;
+import com.upc.TRIPBUDDIES.entities.Traveller;
+import com.upc.TRIPBUDDIES.entities.carrier;
+import com.upc.TRIPBUDDIES.service.ICarrierService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -15,13 +16,13 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 @RestController
-@RequestMapping("/api/v1/bussiness")
-@Api(tags = "Bussiness", value = "Web Service RESTFul of Bussiness")
-public class BussinessController {
-    private final IBussinessService bussinessService;
+@RequestMapping("/api/v1/Carrier")
+@Api(tags = "Carriers", value = "Web Service RESTFul of Carriers")
+public class CarrierController {
+    private final ICarrierService carrierService;
 
-    public BussinessController(IBussinessService bussinessService) {
-        this.bussinessService = bussinessService;
+    public CarrierController(ICarrierService carrierService) {
+        this.carrierService = carrierService;
     }
 
 
@@ -32,9 +33,9 @@ public class BussinessController {
             @ApiResponse(code = 404, message = "Bussinesss Not Found"),
             @ApiResponse(code = 501, message = "Internal Server Error")
     })
-    public ResponseEntity<List<Bussiness>> findAllBussiness(){
+    public ResponseEntity<List<carrier>> findAllBussiness(){
         try {
-            List<Bussiness> bussinesses = bussinessService.getAll();
+            List<carrier> bussinesses = carrierService.getAll();
             if(bussinesses.isEmpty())
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             return new ResponseEntity<>(bussinesses, HttpStatus.OK);
@@ -51,9 +52,9 @@ public class BussinessController {
             @ApiResponse(code = 404, message = "Bussiness Not Found"),
             @ApiResponse(code = 501, message = "Internal Server Error")
     })
-    public ResponseEntity<Bussiness> findBussinessById(@PathVariable("id") Long id){
+    public ResponseEntity<carrier> findBussinessById(@PathVariable("id") Long id){
         try {
-            Optional<Bussiness> bussiness = bussinessService.getById(id);
+            Optional<carrier> bussiness = carrierService.getById(id);
             return bussiness.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
 
         } catch (Exception e) {
@@ -67,9 +68,9 @@ public class BussinessController {
             @ApiResponse(code = 400, message = "Bad Request"),
             @ApiResponse(code = 501, message = "Internal Server Error")
     })
-    public ResponseEntity<Bussiness> createBussiness(@Valid @RequestBody Bussiness bussiness){
+    public ResponseEntity<carrier> createBussiness(@Valid @RequestBody carrier carrier){
         try {
-            Bussiness bussinessCreate = bussinessService.save(bussiness);
+            carrier bussinessCreate = carrierService.save(carrier);
             return new ResponseEntity<>(bussinessCreate, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -82,11 +83,11 @@ public class BussinessController {
             @ApiResponse(code = 400, message = "Bad Request"),
             @ApiResponse(code = 501, message = "Internal Server Error")
     })
-    public ResponseEntity<Bussiness> updateBussiness(@PathVariable("id") Long id, @Valid @RequestBody Bussiness bussiness){
+    public ResponseEntity<carrier> updateBussiness(@PathVariable("id") Long id, @Valid @RequestBody carrier carrier){
         try {
-            if(id.equals(bussiness.getId())){
-                Bussiness bussinessUpdate = bussinessService.save(bussiness);
-                return new ResponseEntity<>(bussinessUpdate, HttpStatus.OK);
+            if(id.equals(carrier.getId())){
+                carrier carrierUpdate = carrierService.save(carrier);
+                return new ResponseEntity<>(carrierUpdate, HttpStatus.OK);
             }else{
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
@@ -101,12 +102,33 @@ public class BussinessController {
             @ApiResponse(code = 404, message = "Bussiness Not Found"),
             @ApiResponse(code = 501, message = "Internal Server Error")
     })
-    public ResponseEntity<Bussiness> deleteTraveller(@PathVariable("id") Long id){
+    public ResponseEntity<carrier> deleteTraveller(@PathVariable("id") Long id){
         try {
-            Optional<Bussiness> traveller = bussinessService.getById(id);
+            Optional<carrier> traveller = carrierService.getById(id);
             if(traveller.isPresent()){
-                bussinessService.delete(id);
+                carrierService.delete(id);
                 return new ResponseEntity<>(HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @GetMapping(value = "/email/{email}/password/{password}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Get Carrier by email and password", notes = "Method for get a Carrier")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Carrier Get"),
+            @ApiResponse(code = 404, message = "Carrier Not Found"),
+            @ApiResponse(code = 501, message = "Internal Server Error")
+    })
+    public ResponseEntity<carrier> getCarrierByEmailAndPassword(@PathVariable("email") String email, @PathVariable("password") String password){
+        try {
+            carrier carrier = carrierService.existsByEmailAndPassword(email, password);
+            if(carrier != null){
+                return new ResponseEntity<>(carrier, HttpStatus.OK);
             }else{
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }

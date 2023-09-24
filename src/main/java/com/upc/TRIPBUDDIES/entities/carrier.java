@@ -7,23 +7,24 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "bussiness")
+@Table(name = "carriers")
 @Data
 @NoArgsConstructor
-public class Bussiness extends User {
+public class carrier extends User {
     private String ruc;
-    private String owner;
-    private String name;
     private String address;
     private String country;
     private String city;
-    public Bussiness(Long id, String firstName, String lastName, String email, String phone, String password, String role, String description, String image, String ruc, String owner, String name, String address, String country, String city, String bannerImage) {
+    private String Plate;
+    private String Marca;
+
+    public carrier(Long id, String firstName, String lastName, String email, String phone, String password, String role, String description, String image, String ruc, String address, String country, String city, String bannerImage, String Plate, String Marca) {
         super(id, firstName, lastName, email, phone, password, role, description, image, bannerImage);
         this.ruc = ruc;
-        this.owner = owner;
-        this.name = name;
         this.address = address;
         this.country = country;
         this.city = city;
+        this.Plate = Plate;
+        this.Marca = Marca;
     }
 }

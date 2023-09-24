@@ -91,7 +91,7 @@ public class MessageController {
             @ApiResponse(code = 404, message = "Message Not Found"),
             @ApiResponse(code = 501, message = "Internal Server Error")
     })
-    public ResponseEntity<Message> findMessageById(@PathVariable("id")Long id, @PathVariable("receiverId")Long receiverId){
+    public ResponseEntity<Message> findMessageById(@PathVariable("id")Long id){
         try {
             Optional<Message> message = messageService.getById(id);
             if(!message.isPresent())

@@ -1,8 +1,8 @@
 package com.upc.TRIPBUDDIES.controller;
 
-import com.upc.TRIPBUDDIES.entities.Bussiness;
+import com.upc.TRIPBUDDIES.entities.carrier;
 import com.upc.TRIPBUDDIES.entities.Places;
-import com.upc.TRIPBUDDIES.service.IBussinessService;
+import com.upc.TRIPBUDDIES.service.ICarrierService;
 import com.upc.TRIPBUDDIES.service.IPlacesService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -22,9 +22,9 @@ import java.util.Optional;
 @Api(tags = "Places", value = "Web Service RESTFul of Places")
 public class PlacesControlller {
     private final IPlacesService placesService;
-    private final IBussinessService bussinessService;
+    private final ICarrierService bussinessService;
 
-    public PlacesControlller(IPlacesService placesService, IBussinessService bussinessService) {
+    public PlacesControlller(IPlacesService placesService, ICarrierService bussinessService) {
         this.placesService = placesService;
         this.bussinessService = bussinessService;
     }
@@ -74,13 +74,13 @@ public class PlacesControlller {
     })
     public ResponseEntity<Places> createplaces(@PathVariable("id") Long id, @RequestBody Places places){
         try {
-            Optional<Bussiness> userBussiness = bussinessService.getById(id);
+            Optional<carrier> userBussiness = bussinessService.getById(id);
             if(!userBussiness.isPresent())
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             else {
-                places.setBussiness(userBussiness.get());
+                places.setCarriers(userBussiness.get());
                 Places newplaces = placesService.save(places);
-                return ResponseEntity.status(HttpStatus.CREATED).body(newplaces);
+                return new ResponseEntity<>(newplaces, HttpStatus.CREATED);
             }
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -136,7 +136,7 @@ public class PlacesControlller {
     })
     public ResponseEntity<List<Places>> findByBussinessId (@PathVariable("id") Long id){
         try {
-            Optional<Bussiness> places =bussinessService.getById(id);
+            Optional<carrier> places =bussinessService.getById(id);
 
             if(!places.isPresent()){
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -148,25 +148,6 @@ public class PlacesControlller {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    // Find By location
-    @GetMapping(value = "/location/{location}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Search places by location", notes = "Method for find a places by location")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Places found by location"),
-            @ApiResponse(code = 404, message = "Places Not Found"),
-            @ApiResponse(code = 501, message = "Internal Server Error")
-    })
-    public ResponseEntity<List<Places>> findByLocation (@PathVariable("location") String location){
-        try {
-            List<Places> places =placesService.findByLocation(location);
-            if(places.size()>0){
-                return new ResponseEntity<>(places, HttpStatus.OK);
-            }
-            else{
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+
+
 }

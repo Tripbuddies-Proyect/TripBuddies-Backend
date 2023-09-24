@@ -45,4 +45,9 @@ public class TravellerServiceImpl implements ITravellerService {
     public Optional<Traveller> getById(Long id) throws Exception {
         return travellerRepository.findById(id);
     }
+
+    @Override
+    public Traveller existsByEmailAndPassword(String email, String password) {
+        return travellerRepository.findByEmailAndPassword(email, password);
+    }
 }

@@ -127,4 +127,26 @@ public class TravellerController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-}
+    @GetMapping(value = "/email/{email}/password/{password}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Get Traveller by email and password", notes = "Method for get a Traveller")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Traveller Get"),
+            @ApiResponse(code = 404, message = "Traveller Not Found"),
+            @ApiResponse(code = 501, message = "Internal Server Error")
+    })
+    public ResponseEntity<Traveller> getTravellerByEmailAndPassword(@PathVariable("email") String email, @PathVariable("password") String password){
+        try {
+            Traveller traveller = travellerService.existsByEmailAndPassword(email, password);
+            if(traveller != null){
+                return new ResponseEntity<>(traveller, HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    }
+
+

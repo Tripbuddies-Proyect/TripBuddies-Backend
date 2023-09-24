@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ITravellerRepository extends JpaRepository<Traveller, Long> {
-    boolean existsTravellerByEmail(String email);
+    Traveller  findByEmailAndPassword(String email, String password);
+    boolean  existsTravellerByEmail(String email);
 }
