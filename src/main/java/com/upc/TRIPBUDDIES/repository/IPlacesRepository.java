@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface IPlacesRepository extends JpaRepository<Places, Long>{
     List<Places> findByCarriersId(Long business_id);
+
+    List<Places> findByDestino(String destino);
 }
