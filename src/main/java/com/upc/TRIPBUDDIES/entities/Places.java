@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 @Entity
 @Table(name = "places")
@@ -31,6 +33,11 @@ public class Places implements Serializable {
 
     @Column(name = "country", nullable = false, length = 50)
     private String country;
+
+    @Temporal(TemporalType.DATE) // Esto indica que se trata de una fecha sin tiempo
+    @DateTimeFormat(pattern = "yyyy-MM-dd") // Formato de entrada y salida
+    @Column(name = "date", nullable = false)
+    private Date date;
     @ManyToOne
     @JoinColumn(name = "bussiness_id", nullable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
