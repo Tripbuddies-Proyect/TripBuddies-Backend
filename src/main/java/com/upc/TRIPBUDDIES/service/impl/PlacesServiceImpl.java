@@ -47,10 +47,5 @@ public class PlacesServiceImpl implements IPlacesService {
         return placesRepository.findByCarriersId(business_id);
     }
 
-    @Override
-    public List<Places> findByDestino(String destino) throws Exception {
-        return placesRepository.findByDestino(destino);
-    }
-
 
 }
