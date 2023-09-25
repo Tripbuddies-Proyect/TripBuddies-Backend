@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -29,9 +31,9 @@ public class Places implements Serializable {
 
     @Column(name = "destino", nullable = false, length = 50)
     private String destino;
-
+    @Temporal(TemporalType.DATE)
     @Column(name = "fecha", nullable = false, length = 50)
-    private String Date;
+    private Date Date;
 
     @Column(name = "hora", nullable = false, length = 50)
     private String Hour;

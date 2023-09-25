@@ -75,12 +75,12 @@ public class PlacesControlller {
     public ResponseEntity<Places> createplaces(@PathVariable("id") Long id, @RequestBody Places places){
         try {
             Optional<carrier> userBussiness = bussinessService.getById(id);
-            if(!userBussiness.isPresent())
+            if(!userBussiness.isPresent() )
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             else {
                 places.setCarriers(userBussiness.get());
                 Places newplaces = placesService.save(places);
-                return new ResponseEntity<>(newplaces, HttpStatus.CREATED);
+                return ResponseEntity.status(HttpStatus.CREATED).body(newplaces);
             }
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
