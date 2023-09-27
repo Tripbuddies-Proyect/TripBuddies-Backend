@@ -19,10 +19,14 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name="date", nullable = false)
-    private Date date;
+    private String date;
     @ManyToOne
     @JoinColumn(name = "carrier_id",nullable = false)
     private carrier carrier;
+
+    @ManyToOne
+    @JoinColumn(name = "places_id",nullable = false)
+    private Places places;
 
     @Column(name="amount", nullable = false)
     private float amount;

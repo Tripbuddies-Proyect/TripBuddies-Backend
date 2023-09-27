@@ -1,10 +1,13 @@
 package com.upc.TRIPBUDDIES.controller;
 
 
-import com.upc.TRIPBUDDIES.entities.Adquisicions;
+import com.upc.TRIPBUDDIES.entities.Places;
+import com.upc.TRIPBUDDIES.entities.carrier;
 import com.upc.TRIPBUDDIES.entities.Payment;
 import com.upc.TRIPBUDDIES.service.IAdquisicionsService;
+import com.upc.TRIPBUDDIES.service.ICarrierService;
 import com.upc.TRIPBUDDIES.service.IPaymentService;
+import com.upc.TRIPBUDDIES.service.IPlacesService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -16,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,10 +30,15 @@ import java.util.Optional;
 public class PaymentController {
     @Autowired
     private final IPaymentService paymentService;
+    private final ICarrierService CarrierService;
+
+    private final IPlacesService placesService;
 
 
-    public PaymentController(IPaymentService paymentService) {
+    public PaymentController(IPaymentService paymentService,ICarrierService CarrierService, IPlacesService placesService) {
         this.paymentService = paymentService;
+        this.CarrierService = CarrierService;
+        this.placesService = placesService;
     }
 
 
@@ -41,10 +51,11 @@ public class PaymentController {
     })
     public ResponseEntity<List<Payment>> findAllPayments(){
         try {
-            List<Payment> bussinesses = paymentService.getAll();
-            if(bussinesses.isEmpty())
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            return new ResponseEntity<>(bussinesses, HttpStatus.OK);
+            List<Payment> Payments = paymentService.getAll();
+            if(Payments.size()>0)
+            return new ResponseEntity<>(Payments, HttpStatus.OK);
+            else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -68,20 +79,34 @@ public class PaymentController {
         }
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/{id}/Places/{PlaceId}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create payments", notes = "Method for create a payments")
     @ApiResponses({
             @ApiResponse(code = 201, message = "payments created"),
             @ApiResponse(code = 400, message = "payments Bad Request"),
             @ApiResponse(code = 501, message = "Internal Server Error")
     })
-    public ResponseEntity<Payment> createBussiness(@Valid @RequestBody Payment carrier){
+    public ResponseEntity<Payment> createPayment(@PathVariable("id") Long id,@PathVariable("PlaceId")Long PlaceId ,@Valid @RequestBody Payment payment){
         try {
-            Payment bussinessCreate = paymentService.save(carrier);
-            return new ResponseEntity<>(bussinessCreate, HttpStatus.CREATED);
+            Optional<carrier> userCarrier = CarrierService.getById(id);
+            Optional<Places> places = placesService.getById(PlaceId);
+            payment.setCarrier(userCarrier.get());
+            payment.setPlaces(places.get());
+
+            Date currentDate = new Date();
+
+            // Convierte la fecha actual a un formato de cadena deseado (por ejemplo, "dd/MM/yyyy HH:mm:ss")
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            String currentDateString = dateFormat.format(currentDate);
+
+            // Establece la fecha actual en el objeto Payment
+            payment.setDate(currentDateString);
+            Payment PaymentCreate = paymentService.save(payment);
+            return new ResponseEntity<>(PaymentCreate, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
     }
 
 

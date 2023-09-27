@@ -29,6 +29,26 @@ public class PlacesControlller {
         this.bussinessService = bussinessService;
     }
 
+
+    @GetMapping(value = "/destino/{destino}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Search places by destino", notes = "Method for find a places by destino")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Places found by destino"),
+            @ApiResponse(code = 404, message = "Places Not Found"),
+            @ApiResponse(code = 501, message = "Internal Server Error")
+    })
+    public ResponseEntity<List<Places>> findByDestino (@PathVariable("destino") String destino){
+        try {
+            List<Places> places = placesService.findByDestino(destino);
+            if(places.size()>0)
+                return new ResponseEntity<>(places, HttpStatus.OK);
+            else
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "List all Places", notes = "Method to list all Places")
     @ApiResponses({
