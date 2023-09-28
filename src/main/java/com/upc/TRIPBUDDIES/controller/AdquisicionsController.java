@@ -4,6 +4,8 @@ package com.upc.TRIPBUDDIES.controller;
 import com.upc.TRIPBUDDIES.entities.Adquisicions;
 import com.upc.TRIPBUDDIES.entities.carrier;
 import com.upc.TRIPBUDDIES.service.IAdquisicionsService;
+import com.upc.TRIPBUDDIES.service.IPlacesService;
+import com.upc.TRIPBUDDIES.service.ITravellerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -23,9 +25,13 @@ import java.util.Optional;
 public class AdquisicionsController {
 
     private final IAdquisicionsService adquisicionsService;
-    public AdquisicionsController(IAdquisicionsService adquisicionsService) {
+    private final IPlacesService placesService;
+
+    private final ITravellerService travellerService;
+    public AdquisicionsController(IAdquisicionsService adquisicionsService, IPlacesService placesService, ITravellerService travellerService) {
         this.adquisicionsService = adquisicionsService;
-    }
+        this.placesService = placesService;
+        this.travellerService = travellerService;}
 
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -64,15 +70,60 @@ public class AdquisicionsController {
         }
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/traveller/{TravellerId}/place/{PlaceId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Exist Adquisicions traveller and Place", notes = "Method for find a Adquisicions by id")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Adquisicions found by Id"),
+            @ApiResponse(code = 404, message = "Adquisicions Not Found"),
+            @ApiResponse(code = 501, message = "Internal Server Error")
+    })
+    public ResponseEntity<Boolean> ExistAdquisicionsByPlaceIdandTravellerId(@PathVariable ("PlaceId") Long PlaceId,@PathVariable ("TravellerId") Long TravellerId) throws Exception {
+
+        try {
+            boolean exists = adquisicionsService.existsByTravellerIdAndPlacesId(TravellerId, PlaceId);
+            return ResponseEntity.ok(exists);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
+
+
+    @GetMapping(value = "/traveller/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Search Adquisicions by traveller Id", notes = "Method for find a Adquisicions by traveller id")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Adquisicions found by traveller Id"),
+            @ApiResponse(code = 404, message = "Adquisicions Not Found"),
+            @ApiResponse(code = 501, message = "Internal Server Error")
+    })
+    public ResponseEntity<List<Adquisicions>> findAdquisicionsBytravellerId(@PathVariable("id") Long id){
+        try {
+            List<Adquisicions> Adquisicions = adquisicionsService.findByTravellerId(id);
+            if(Adquisicions.size()>0)
+                return new ResponseEntity<>(Adquisicions, HttpStatus.OK);
+            else
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
+
+    @PostMapping(value = "/{TravellerId}/place/{PlaceId}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create Adquisicions", notes = "Method for create a Adquisicions")
     @ApiResponses({
             @ApiResponse(code = 201, message = "Adquisicions created"),
             @ApiResponse(code = 400, message = "Adquisicions Bad Request"),
             @ApiResponse(code = 501, message = "Internal Server Error")
     })
-    public ResponseEntity<Adquisicions> createBussiness(@Valid @RequestBody Adquisicions carrier){
+    public ResponseEntity<Adquisicions> CreateAdquisicion(@PathVariable ("PlaceId") Long PlaceId,@PathVariable ("TravellerId") Long TravellerId,@Valid @RequestBody Adquisicions carrier){
         try {
+            carrier.setTraveller(travellerService.getById(TravellerId).get());
+            carrier.setPlaces(placesService.getById(PlaceId).get());
             Adquisicions bussinessCreate = adquisicionsService.save(carrier);
             return new ResponseEntity<>(bussinessCreate, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -101,6 +152,8 @@ public class AdquisicionsController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
 
 
 

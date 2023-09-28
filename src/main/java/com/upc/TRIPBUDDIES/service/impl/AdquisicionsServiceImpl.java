@@ -39,4 +39,14 @@ public class AdquisicionsServiceImpl implements IAdquisicionsService {
     public Optional<Adquisicions> getById(Long id) throws Exception {
         return adquisicionsRepository.findById(id);
     }
+
+    @Override
+    public List<Adquisicions> findByTravellerId(Long user_id) throws Exception {
+        return adquisicionsRepository.findByTravellerId(user_id);
+    }
+
+    @Override
+    public boolean existsByTravellerIdAndPlacesId(Long user_id, Long place_id) throws Exception {
+        return adquisicionsRepository.existsByTravellerIdAndPlacesId(user_id, place_id);
+    }
 }
