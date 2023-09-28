@@ -4,6 +4,7 @@ package com.upc.TRIPBUDDIES.controller;
 import com.upc.TRIPBUDDIES.entities.Places;
 import com.upc.TRIPBUDDIES.entities.carrier;
 import com.upc.TRIPBUDDIES.entities.Payment;
+import com.upc.TRIPBUDDIES.repository.IPlacesRepository;
 import com.upc.TRIPBUDDIES.service.IAdquisicionsService;
 import com.upc.TRIPBUDDIES.service.ICarrierService;
 import com.upc.TRIPBUDDIES.service.IPaymentService;
@@ -33,12 +34,13 @@ public class PaymentController {
     private final ICarrierService CarrierService;
 
     private final IPlacesService placesService;
+    private final IPlacesRepository placesRepository;
 
-
-    public PaymentController(IPaymentService paymentService,ICarrierService CarrierService, IPlacesService placesService) {
+    public PaymentController(IPaymentService paymentService,ICarrierService CarrierService, IPlacesService placesService, IPlacesRepository placesRepository) {
         this.paymentService = paymentService;
         this.CarrierService = CarrierService;
         this.placesService = placesService;
+        this.placesRepository = placesRepository;
     }
 
 
@@ -92,15 +94,22 @@ public class PaymentController {
             Optional<Places> places = placesService.getById(PlaceId);
             payment.setCarrier(userCarrier.get());
             payment.setPlaces(places.get());
-
             Date currentDate = new Date();
-
             // Convierte la fecha actual a un formato de cadena deseado (por ejemplo, "dd/MM/yyyy HH:mm:ss")
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             String currentDateString = dateFormat.format(currentDate);
-
             // Establece la fecha actual en el objeto Payment
             payment.setDate(currentDateString);
+            payment.setAmount(2);
+            if(placesRepository.existsById(PlaceId)){
+                System.out.println("Payment Agregado Correctamente");
+                this.paymentService.save(payment);
+            }
+            else{
+                System.out.println("Payment No Agregado Correctamente");
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
             Payment PaymentCreate = paymentService.save(payment);
             return new ResponseEntity<>(PaymentCreate, HttpStatus.CREATED);
         } catch (Exception e) {

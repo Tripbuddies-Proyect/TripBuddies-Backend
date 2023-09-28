@@ -2,6 +2,8 @@ package com.upc.TRIPBUDDIES.controller;
 
 
 import com.upc.TRIPBUDDIES.entities.Adquisicions;
+import com.upc.TRIPBUDDIES.entities.Places;
+import com.upc.TRIPBUDDIES.entities.Traveller;
 import com.upc.TRIPBUDDIES.entities.carrier;
 import com.upc.TRIPBUDDIES.service.IAdquisicionsService;
 import com.upc.TRIPBUDDIES.service.IPlacesService;
@@ -16,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,6 +74,8 @@ public class AdquisicionsController {
         }
     }
 
+
+
     @GetMapping(value = "/traveller/{TravellerId}/place/{PlaceId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Exist Adquisicions traveller and Place", notes = "Method for find a Adquisicions by id")
     @ApiResponses({
@@ -113,6 +119,8 @@ public class AdquisicionsController {
 
 
 
+
+
     @PostMapping(value = "/{TravellerId}/place/{PlaceId}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create Adquisicions", notes = "Method for create a Adquisicions")
     @ApiResponses({
@@ -120,15 +128,55 @@ public class AdquisicionsController {
             @ApiResponse(code = 400, message = "Adquisicions Bad Request"),
             @ApiResponse(code = 501, message = "Internal Server Error")
     })
-    public ResponseEntity<Adquisicions> CreateAdquisicion(@PathVariable ("PlaceId") Long PlaceId,@PathVariable ("TravellerId") Long TravellerId,@Valid @RequestBody Adquisicions carrier){
+    public ResponseEntity<Adquisicions> CreateAdquisicion(@PathVariable ("PlaceId") Long PlaceId,@PathVariable ("TravellerId") Long TravellerId,@Valid @RequestBody Adquisicions adquisicion){
         try {
-            carrier.setTraveller(travellerService.getById(TravellerId).get());
-            carrier.setPlaces(placesService.getById(PlaceId).get());
-            Adquisicions bussinessCreate = adquisicionsService.save(carrier);
-            return new ResponseEntity<>(bussinessCreate, HttpStatus.CREATED);
+            Optional<Traveller> user = travellerService.getById(TravellerId);
+            Optional<Places> places = placesService.getById(PlaceId);
+
+            if (user.isPresent() && places.isPresent()) {
+                String fechaDeLanzamiento = places.get().getDate();
+                SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+                Date fecha = formato.parse(fechaDeLanzamiento);
+                Date fechaActual = new Date();
+                Date fechaPlaces = fecha;
+                long diferenciaEnMilisegundos = fechaPlaces.getTime() - fechaActual.getTime();
+                long diferenciaEnDias = diferenciaEnMilisegundos / (1000 * 60 * 60 * 24);
+                System.out.println("Fecha actual: " + fechaActual);
+                System.out.println("Fecha place: " + fecha);
+                System.out.println("Diferencia en días: " + diferenciaEnDias);
+                if (diferenciaEnDias >= 1) {
+                    System.out.println("Se puede crear");
+                    // En lugar de crear una instancia SaleTable aquí, llama al método de servicio correspondiente
+                    adquisicion.setPlaces(places.get());
+                    adquisicion.setTraveller(user.get());
+                    Adquisicions Saletable = adquisicionsService.save(adquisicion);
+                    return new ResponseEntity<>(Saletable, HttpStatus.CREATED);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                }
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+
+
+
+
+
+
+
+
+        // try {
+        //    carrier.setTraveller(travellerService.getById(TravellerId).get());
+        //    carrier.setPlaces(placesService.getById(PlaceId).get());
+        //    Adquisicions bussinessCreate = adquisicionsService.save(carrier);
+        //    return new ResponseEntity<>(bussinessCreate, HttpStatus.CREATED);
+        //} catch (Exception e) {
+        //    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        //}
     }
 
 

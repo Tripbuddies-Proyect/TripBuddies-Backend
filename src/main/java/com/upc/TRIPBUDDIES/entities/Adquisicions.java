@@ -23,13 +23,8 @@ public class Adquisicions {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "placesId", nullable = false)
     private Places places;
-
     @Column(name = "date", nullable = false)
     private String date;
-    
-
-
-
 }
 
 

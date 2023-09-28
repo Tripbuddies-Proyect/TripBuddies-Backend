@@ -1,11 +1,14 @@
 package com.upc.TRIPBUDDIES.service.impl;
 
 import com.upc.TRIPBUDDIES.entities.Adquisicions;
+import com.upc.TRIPBUDDIES.entities.Places;
+import com.upc.TRIPBUDDIES.entities.Traveller;
 import com.upc.TRIPBUDDIES.repository.IAdquisicionsRepository;
 import com.upc.TRIPBUDDIES.service.IAdquisicionsService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +21,7 @@ public class AdquisicionsServiceImpl implements IAdquisicionsService {
     public AdquisicionsServiceImpl(IAdquisicionsRepository adquisicionsRepository) {
         this.adquisicionsRepository = adquisicionsRepository;
     }
+
 
     @Override
     public Adquisicions save(Adquisicions adquisicions) throws Exception {

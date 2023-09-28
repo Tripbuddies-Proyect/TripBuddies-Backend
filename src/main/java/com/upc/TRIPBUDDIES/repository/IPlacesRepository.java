@@ -10,5 +10,5 @@ import java.util.List;
 public interface IPlacesRepository extends JpaRepository<Places, Long>{
     List<Places> findByCarriersId(Long business_id);
     List<Places> findByDestino(String destino);
-
+    boolean existsById(Long id);
 }
