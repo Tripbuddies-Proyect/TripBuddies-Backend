@@ -75,20 +75,22 @@ public class ReviewController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @PostMapping(value = "places/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "places/{id}/traveller/{travellerid}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create Review", notes = "Method to create an Review")
     @ApiResponses( {
             @ApiResponse(code = 201, message = "Review found"),
             @ApiResponse(code = 404, message = "Review not found"),
             @ApiResponse(code = 500, message = "Internal Server Error")
     })
-    public ResponseEntity<Review> insertReview(@PathVariable("id") Long id, @RequestBody Review review){
+    public ResponseEntity<Review> insertReview(@PathVariable("id") Long id,@PathVariable("travellerid") Long travellerid, @RequestBody Review review){
         try {
             Optional<Places> reviewNew = placesService.getById(id);
-            if (!reviewNew.isPresent()){
+            Optional<Traveller> traveller = travellerService.getById(travellerid);
+            if (!reviewNew.isPresent() || !traveller.isPresent()){
                 return new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY);
             }else {
                 review.setPlaces(reviewNew.get());
+                review.setTraveller(traveller.get());
                 Review reviewCreate = reviewService.save(review);
                 return ResponseEntity.status(HttpStatus.CREATED).body(reviewCreate);
             }

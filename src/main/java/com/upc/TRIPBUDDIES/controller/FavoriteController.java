@@ -77,18 +77,21 @@ public class FavoriteController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @PostMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/{userId}/{placeId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Save Favorite", notes = "Method to save Favorite")
     @ApiResponses({
             @ApiResponse(code = 201, message = "Favorite found"),
             @ApiResponse(code = 404, message = "Favorite Not Found"),
             @ApiResponse(code = 500, message = "Internal Server Error")
     })
-    public ResponseEntity<Favorite> insertFavorite(@PathVariable("userId") Long userId, @RequestBody Favorite favorite) {
+    public ResponseEntity<Favorite> insertFavorite(@PathVariable("userId") Long userId,@PathVariable("placeId") Long placeId, @RequestBody Favorite favorite) {
         try {
             Optional<Traveller> traveller = travellerService.getById(userId);
-            if (traveller.isPresent()) {
+            Optional<Places> places = placesService.getById(placeId);
+
+            if (traveller.isPresent() && places.isPresent()) {
                 favorite.setTraveller(traveller.get());
+                favorite.setPlaces(places.get());
                 Favorite favoriteNew = favoriteRepository.save(favorite);
                 return ResponseEntity.status(HttpStatus.CREATED).body(favoriteNew);
             } else {
