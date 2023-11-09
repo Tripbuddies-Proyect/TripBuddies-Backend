@@ -1,0 +1,6 @@
+com\upc\TRIPBUDDIES\controller\PlaceSteps.class
+com\upc\TRIPBUDDIES\controller\ReviewControllerTest.class
+com\upc\TRIPBUDDIES\controller\RunCucumberTest.class
+com\upc\TRIPBUDDIES\controller\CucumberSpringConfiguration.class
+com\upc\TRIPBUDDIES\controller\PaymentControllerTest.class
+com\upc\TRIPBUDDIES\controller\AdquisicionsControllerTest.class

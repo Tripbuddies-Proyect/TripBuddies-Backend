@@ -1,0 +1,15 @@
+        stage('Deploy Stage') {
+            steps {
+                script {
+                    // Usando el plugin de credenciales de Jenkins para inyectar la credencial
+                    withCredentials([string(credentialsId: 'my-railway-token-id', variable: 'RAILWAY_TOKEN')]) {
+                        // Instalar Railway CLI si es necesario
+                        sh 'npm install -g railway'
+                        // Usar el token para iniciar sesión en Railway
+                        sh 'railway login --token ${RAILWAY_TOKEN}'
+                        // Realizar el despliegue
+                        sh 'railway up'
+                    }
+                }
+            }
+        }
