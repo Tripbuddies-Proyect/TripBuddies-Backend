@@ -18,7 +18,7 @@ public class TripbuddiesApplication {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
-						.allowedOrigins("http://localhost:4200") // Reemplaza con el origen de tu aplicación Angular
+						.allowedOrigins("https://features-deploy--wondrous-cupcake-32d21b.netlify.app") // Reemplaza con el origen de tu aplicación Angular
 						.allowedMethods("GET", "POST", "PUT", "DELETE")
 						.allowedHeaders("*")
 						.allowCredentials(true);
